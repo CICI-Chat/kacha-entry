@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CG">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>📸 咔嚓 · AI拍照解说</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    background:linear-gradient(135deg,#0f0c29,#302b63 50%,#24243e);color:#fff;
+    display:flex;align-items:center;justify-content:center;padding:24px;overflow:hidden}
+  .glow{position:absolute;width:420px;height:420px;border-radius:50%;
+    background:radial-gradient(circle,rgba(124,92,255,.35),transparent 70%);
+    animation:float 6s ease-in-out infinite}
+  @keyframes float{50%{transform:translateY(-26px)}}
+  .card{position:relative;text-align:center;max-width:400px;width:100%;
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);
+    backdrop-filter:blur(20px);border-radius:28px;padding:44px 28px}
+  .logo{font-size:64px;line-height:1;margin-bottom:18px}
+  h1{font-size:22px;margin-bottom:10px;font-weight:700}
+  #status{font-size:14px;opacity:.78;line-height:1.7;margin-bottom:26px;min-height:48px}
+  .btn{display:inline-block;padding:14px 38px;border-radius:999px;text-decoration:none;
+    background:linear-gradient(135deg,#7c5cff,#4f9dff);color:#fff;font-weight:700;
+    font-size:16px;box-shadow:0 10px 30px rgba(99,102,241,.45)}
+  .hint{margin-top:22px;font-size:12px;opacity:.5;line-height:1.7}
+  .spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);
+    border-top-color:#fff;border-radius:50%;animation:sp 1s linear infinite;vertical-align:-3px;margin-right:6px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<div class="card">
+  <div class="logo">📸</div>
+  <h1>咔嚓 · AI拍照解说</h1>
+  <p id="status"><span class="spin"></span>正在接通最新服务地址…</p>
+  <a id="go" class="btn" style="display:none" href="#">立即打开咔嚓</a>
+  <p class="hint">这是永久入口，可以放心收藏。<br>若长时间无法接通，说明家中电脑未开机或服务未运行。</p>
+</div>
+<script>
+(function(){
+  var statusEl=document.getElementById('status'), goEl=document.getElementById('go');
+  function fail(msg){
+    statusEl.innerHTML=msg;
+    goEl.style.display='inline-block';
+    goEl.onclick=function(){setTimeout(function(){location.reload()},600)};
+  }
+  fetch('latest.json?t='+Date.now(),{cache:'no-store'})
+    .then(function(r){if(!r.ok)throw 0;return r.json()})
+    .then(function(d){
+      if(!d.url)throw 0;
+      goEl.href=d.url;
+      statusEl.innerHTML='已接通，正在进入…<br><small style="opacity:.6">更新于 '+
+        (d.updated_at||'')+'</small>';
+      setTimeout(function(){location.replace(d.url)},900);
+    })
+    .catch(function(){
+      fail('暂时无法连接到服务 😢<br><br><a class="btn" href="#" id="retry">点我重试</a><br>'+
+           '<span class="hint">请确认家中电脑已开机</span>');
+      var rt=document.getElementById('retry');
+      if(rt)rt.onclick=function(e){e.preventDefault();location.reload()};
+    });
+})();
+</script>
+</body>
+</html>

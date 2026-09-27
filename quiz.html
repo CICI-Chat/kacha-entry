@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>📚 刷题系统</title>
+<style>
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:linear-gradient(135deg,#0d2b45,#203a6b);color:#fff;
+    display:flex;align-items:center;justify-content:center;height:100vh;margin:0}
+  .card{text-align:center;background:rgba(255,255,255,.08);border-radius:28px;
+    padding:44px 30px;backdrop-filter:blur(20px);max-width:380px}
+  .logo{font-size:58px;margin-bottom:16px}
+  p{opacity:.8;font-size:14px;line-height:1.8}
+  .spin{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.3);
+    border-top-color:#fff;border-radius:50%;animation:s 1s linear infinite;vertical-align:-3px}
+  @keyframes s{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">📚</div>
+  <h2>刷题系统</h2>
+  <p id="st"><span class="spin"></span> 正在接通最新地址…</p>
+</div>
+<script>
+fetch('latest.json?t='+Date.now(),{cache:'no-store'})
+ .then(function(r){return r.json()})
+ .then(function(d){
+   if(d.quiz_url){document.getElementById('st').textContent='已接通，正在进入…';
+     setTimeout(function(){location.replace(d.quiz_url)},800);}
+   else throw 0;
+ })
+ .catch(function(){document.getElementById('st').innerHTML=
+   '暂时无法连接 😢<br>请确认家中电脑已开机<br><br><a href="." style="color:#8ab4ff">点我重试</a>';});
+</script>
+</body>
+</html>
